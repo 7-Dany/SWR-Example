@@ -1,5 +1,8 @@
 "use client";
-import { createPost } from "./api/postsApi";
+import {
+  addMutation as createPost,
+  createPostsOptions,
+} from "./helpers/postsMutations";
 import CreatePost from "./components/CreatePost";
 import Posts from "./components/Posts";
 import usePost from "./data/usePost";
@@ -8,10 +11,12 @@ import { IPost } from "./types";
 export default function Home() {
   const { posts, error, isLoading, mutate } = usePost();
 
-  async function createNewPost(post: IPost) {
+  async function createNewPost(newPost: IPost) {
     try {
-      await createPost(post);
-      mutate()
+      await mutate(
+        createPost(newPost, posts as IPost[]),
+        createPostsOptions(newPost, posts as IPost[])
+      );
     } catch (error) {
       console.log(error);
     }
